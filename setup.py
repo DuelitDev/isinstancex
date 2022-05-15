@@ -6,19 +6,19 @@ with open("README.md", "r") as file:
 
 
 setup(
-    name="pifields",
+    name="isinstancex",
     version="1.0.0",
-    description="Define fields simply",
+    description="Extend isinstance function",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="DuelitDev",
     author_email="jyoon07dev@gmail.com",
     maintainer="DuelitDev",
     maintainer_email="jyoon07dev@gmail.com",
-    url="https://github.com/DuelitDev/pifields",
+    url="https://github.com/DuelitDev/isinstancex",
     packages=find_packages(),
     python_requires=">=3.7",
-    keywords=["field", "fields", "pyfields", "pifields"],
+    keywords=["isinstance", "isinstancex"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",
