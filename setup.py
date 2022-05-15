@@ -36,4 +36,4 @@ setup(
 
 # python setup.py sdist
 # python setup.py bdist_wheel
-# twine upload ./dist/py-fields-x.x.x-py3-none-any.whl
+# twine upload ./dist/isinstancex-x.x.x-py3-none-any.whl
