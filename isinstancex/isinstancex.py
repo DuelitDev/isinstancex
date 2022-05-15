@@ -60,7 +60,7 @@ def isinstancex(__obj: typing.Any,
             temp.append(__class.__name__)
         require = ", ".join(temp)
     else:
-        require = type(__class_or_tuple).__name__
+        require = __class_or_tuple.__name__
     # get the type I got
     got_type = type(__obj).__name__
     # raise
