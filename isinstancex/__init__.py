@@ -6,7 +6,11 @@
 
 
 from isinstancex._version import python_version
-if python_version >= 3.7:
+
+
+requires = 3.8
+if python_version >= requires:
+    del python_version
     from isinstancex.isinstancex import *
 else:
-    raise OSError("Python version must be higher or equal to 3.7.")
+    raise OSError(f"Python version must be higher or equal to {requires}.")
