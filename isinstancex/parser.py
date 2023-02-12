@@ -8,11 +8,24 @@ import typing
 from isinstancex._version import *
 
 
+def is_tuple(expr) -> bool:
+    name = type(expr).__name__
+    module = expr.__module__ if "__module__" in dir(expr) else None
+    return ((py_ver >= 3.9 and name == "GenericAlias" and module == "builtins")
+            or (name == "_GenericAlias" and module == "typing"))
+
+
+def parse_tuple(expr) -> typing.Tuple:
+    if not is_tuple(expr):
+        raise ValueError(f"'{type(expr).__name__}' is not Tuple.")
+    return expr.__args__
+
+
 def is_union(expr) -> bool:
     name = type(expr).__name__
     module = expr.__module__ if "__module__" in dir(expr) else None
-    return ((py_ver >= 3.10 and name == "UnionType" and module == "types") or
-            (name == "_UnionGenericAlias" and module == "typing"))
+    return ((py_ver >= 3.10 and name == "UnionType" and module == "types")
+            or (name == "_UnionGenericAlias" and module == "typing"))
 
 
 def parse_union(expr) -> typing.List[type]:
