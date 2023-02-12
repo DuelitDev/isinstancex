@@ -15,7 +15,23 @@ def is_union(expr) -> bool:
             (name == "_UnionGenericAlias" and module == "typing"))
 
 
-def get_union_args(expr) -> typing.List[type]:
+def parse_union(expr) -> typing.List[type]:
     if not is_union(expr):
         raise ValueError(f"'{type(expr).__name__}' is not Union.")
     return expr.__args__
+
+
+def is_optional(expr) -> bool:
+    if is_union(expr):
+        args = parse_union(expr)
+        return len(args) == 2 and None in args
+    return False
+
+
+def parse_optional(expr) -> typing.Tuple[typing.Any, None]:
+    if not is_optional(expr):
+        raise ValueError(f"'{type(expr).__name__}' is not Optional.")
+    args: tuple = expr.__args__
+    if args.index(None) == 0:
+        return tuple(reversed(args))
+    return args
