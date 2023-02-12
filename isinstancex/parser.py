@@ -25,7 +25,8 @@ def is_tuple(expr) -> bool:
     name = type(expr).__name__
     module = expr.__module__ if "__module__" in dir(expr) else None
     return ((py_ver >= 3.9 and name == "GenericAlias" and module == "builtins")
-            or (name == "_GenericAlias" and module == "typing"))
+            or (name == "_GenericAlias" and module == "typing"
+                and getattr(expr, "_name") == "Tuple"))
 
 
 def parse_tuple(expr) -> typing.Tuple:
@@ -38,7 +39,8 @@ def is_union(expr) -> bool:
     name = type(expr).__name__
     module = expr.__module__ if "__module__" in dir(expr) else None
     return ((py_ver >= 3.10 and name == "UnionType" and module == "types")
-            or (name == "_UnionGenericAlias" and module == "typing"))
+            or (name == "_UnionGenericAlias" and module == "typing"
+                and getattr(expr, "_name") == "Union"))
 
 
 def parse_union(expr) -> typing.List[type]:
@@ -48,10 +50,32 @@ def parse_union(expr) -> typing.List[type]:
 
 
 def is_optional(expr) -> bool:
-    if is_union(expr):
-        args = parse_union(expr)
-        return len(args) == 2 and None in args
-    return False
+    name = type(expr).__name__
+    module = expr.__module__ if "__module__" in dir(expr) else None
+    return ((py_ver >= 3.10 and name == "UnionType" and module == "types"
+             and len(expr.__args__) == 2 and None in expr.__args__)
+            or (name == "_UnionGenericAlias" and module == "typing"
+                and getattr(expr, "_name") == "Optional"))
+
+
+def parse_optional(expr) -> typing.Tuple[typing.Any, None]:
+    if not is_optional(expr):
+        raise ValueError(f"'{type(expr).__name__}' is not Optional.")
+    args: tuple = expr.__args__
+    if args.index(None) == 0:
+        return tuple(reversed(args))
+    return args
+
+
+# TODO: typing.Callable
+# TODO: typing.Concatenate
+
+
+def is_type(expr) -> bool:
+    name = type(expr).__name__
+    module = expr.__module__ if "__module__" in dir(expr) else None
+    return ((py_ver >= 3.9 and name == "GenericAlias" and module == "builtins")
+            or (name == "_GenericAlias" and module == "typing"))
 
 
 def parse_optional(expr) -> typing.Tuple[typing.Any, None]:
