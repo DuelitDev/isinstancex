@@ -8,6 +8,19 @@ import typing
 from isinstancex._version import *
 
 
+def is_literal_string(expr) -> bool:
+    name = type(expr).__name__
+    module = expr.__module__ if "__module__" in dir(expr) else None
+    return (name == "_SpecialForm" and module == "typing"
+            and getattr(expr, "_name") == "LiteralString")
+
+
+def parse_literal_string(expr) -> typing.LiteralString:
+    if not is_literal_string(expr):
+        raise ValueError(f"'{type(expr).__name__}' is not Tuple.")
+    return expr
+
+
 def is_tuple(expr) -> bool:
     name = type(expr).__name__
     module = expr.__module__ if "__module__" in dir(expr) else None
