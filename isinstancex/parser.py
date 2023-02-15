@@ -15,7 +15,7 @@ class TypeChecker:
         self._expr: typing.Type = expression
 
     @property
-    def is_typing(self) -> bool:
+    def is_type_hint(self) -> bool:
         return (self.is_any or self.is_union or self.is_tuple or
                 self.is_list or self.is_dict or self.is_set)
 
@@ -63,3 +63,7 @@ class TypeChecker:
                  lib == "builtins" and self._expr() == set()) or
                 (name == "_GenericAlias" and lib == "typing" and
                  getattr(self._expr, "_name") == "Set"))
+
+
+
+
