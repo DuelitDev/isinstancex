@@ -7,57 +7,59 @@
 import typing
 from isinstancex._version import *
 
-__all__ = ["is_any", "is_tuple", "is_union", "is_optional", "is_dict"]
+__all__ = ["TypeChecker"]
 
 
-def is_any(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.11 and name == "_AnyMeta" and module == "typing") or
-            (name == "_SpecialForm" and module == "typing" and
-             getattr(expr, "_name") == "Any"))
+class TypeChecker:
+    def __init__(self, expression: typing.Type):
+        self._expr: typing.Type = expression
 
+    @property
+    def is_typing(self) -> bool:
+        return (self.is_any or self.is_union or self.is_tuple or
+                self.is_list or self.is_dict or self.is_set)
 
-def is_union(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.10 and name == "UnionType" and module == "types") or
-            (name == "_UnionGenericAlias" and module == "typing"))
+    @property
+    def is_any(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.11 and name == "_AnyMeta" and lib == "typing") or
+                (name == "_SpecialForm" and lib == "typing" and
+                 getattr(self._expr, "_name") == "Any"))
 
+    @property
+    def is_union(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.10 and name == "UnionType" and lib == "types") or
+                (name == "_UnionGenericAlias" and lib == "typing"))
 
-def is_optional(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.10 and name == "UnionType" and module == "types" and
-             len(expr.__args__) == 2 and None in expr.__args__) or
-            (name == "_UnionGenericAlias" and module == "typing" and
-             getattr(expr, "_name") == "Optional"))
+    @property
+    def is_tuple(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.9 and name == "GenericAlias" and
+                 lib == "builtins" and self._expr() == ()) or
+                (name == "_GenericAlias" and lib == "typing" and
+                 getattr(self._expr, "_name") == "Tuple"))
 
+    @property
+    def is_list(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.9 and name == "GenericAlias" and
+                 lib == "builtins" and self._expr() == []) or
+                (name == "_GenericAlias" and lib == "typing" and
+                 getattr(self._expr, "_name") == "List"))
 
-def is_tuple(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.9 and name == "GenericAlias" and
-             module == "builtins" and expr() == ()) or
-            (name == "_GenericAlias" and module == "typing" and
-             getattr(expr, "_name") == "Tuple"))
+    @property
+    def is_dict(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.9 and name == "GenericAlias" and
+                 lib == "builtins" and self._expr() == {}) or
+                (name == "_GenericAlias" and lib == "typing" and
+                 getattr(self._expr, "_name") == "Dict"))
 
-
-def is_list(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.9 and name == "GenericAlias" and
-             module == "builtins" and expr() == []) or
-            (name == "_GenericAlias" and module == "typing" and
-             getattr(expr, "_name") == "List"))
-
-
-def is_dict(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.9 and name == "GenericAlias" and
-             module == "builtins" and expr() == {}) or
-            (name == "_GenericAlias" and module == "typing" and
-             getattr(expr, "_name") == "Dict"))
-
-
-def is_set(expr) -> bool:
-    name, module = type(expr).__name__, expr.__module__
-    return ((py_ver >= 3.9 and name == "GenericAlias" and
-             module == "builtins" and expr() == set()) or
-            (name == "_GenericAlias" and module == "typing" and
-             getattr(expr, "_name") == "Set"))
+    @property
+    def is_set(self) -> bool:
+        name, lib = type(self._expr).__name__, self._expr.__module__
+        return ((py_ver >= 3.9 and name == "GenericAlias" and
+                 lib == "builtins" and self._expr() == set()) or
+                (name == "_GenericAlias" and lib == "typing" and
+                 getattr(self._expr, "_name") == "Set"))
