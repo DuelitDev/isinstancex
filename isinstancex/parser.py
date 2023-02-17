@@ -68,7 +68,7 @@ class TypeHintChecker:
 def parse(expr, nodes):
     for t, i in zip((expr,), (nodes,)):
         hint = TypeHintChecker(t)
-        if hint.is_type_hint:
+        if hint.is_hint:
             if hint.is_any:
                 return True
             if hint.is_union:
