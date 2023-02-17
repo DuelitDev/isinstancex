@@ -65,5 +65,25 @@ class TypeChecker:
                  getattr(self._expr, "_name") == "Set"))
 
 
-
-
+def parse(expr, nodes):
+    for t, i in zip((expr,), (nodes,)):
+        tc = TypeChecker(t)
+        if tc.is_type_hint:
+            if tc.is_any:
+                return True
+            if tc.is_union:
+                return any([parse(j, i) for j in t.__args__])
+            if tc.is_tuple:
+                return (isinstance(i, tuple) and
+                        all([parse(j, k) for j, k in zip(t.__args__, i)]))
+            if tc.is_list:
+                return (isinstance(i, list) and
+                        all([parse(t.__args__[0], k) for k in i]))
+            if tc.is_dict:
+                return (isinstance(i, dict) and
+                        all([parse(t.__args__[0], k) for k in i]) and
+                        all([parse(t.__args__[0], k) for k in i.values()]))
+            if tc.is_set:
+                return (isinstance(i, set) and
+                        all([parse(t.__args__[0], k) for k in i]))
+        return isinstance(i, t)
