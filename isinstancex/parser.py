@@ -82,7 +82,7 @@ def parse(expr, nodes):
             if hint.is_dict:
                 return (isinstance(i, dict) and
                         all([parse(t.__args__[0], k) for k in i]) and
-                        all([parse(t.__args__[0], k) for k in i.values()]))
+                        all([parse(t.__args__[1], k) for k in i.values()]))
             if hint.is_set:
                 return (isinstance(i, set) and
                         all([parse(t.__args__[0], k) for k in i]))
