@@ -6,7 +6,7 @@
 
 
 import typing
-from isinstancex.parser import parse
+from isinstancex.parser import parse as _parse
 
 __all__ = ["isinstancex", "tryinstance", "tryinstancex"]
 
@@ -25,7 +25,7 @@ def isinstancex(__obj: typing.Any,
     :param __class_or_type_hint: Class type or type hint.
     :return: bool
     """
-    return parse(__class_or_type_hint, __obj)
+    return _parse(__class_or_type_hint, __obj)
 
 
 def tryinstance(__obj: typing.Any,
