@@ -15,7 +15,7 @@ class TypeHintChecker:
         self._expr: typing.Type = expression
 
     @property
-    def is_type_hint(self) -> bool:
+    def is_hint(self) -> bool:
         return (self.is_any or self.is_union or self.is_tuple or
                 self.is_list or self.is_dict or self.is_set)
 
