@@ -3,7 +3,7 @@ import unittest
 from isinstancex.parser import *
 
 
-class TypeHintCheckerTestCase(unittest.TestCase):
+class ParserTestCase(unittest.TestCase):
     def test_is_hint(self):
         hints = (typing.Any,
                  typing.Union[str, int, float],
@@ -64,6 +64,14 @@ class TypeHintCheckerTestCase(unittest.TestCase):
                  set[str],
                  set[str | int])
         self.assertTrue(all([TypeHintChecker(hint).is_set for hint in hints]))
+
+    def test_parse(self):
+        args = ((typing.Tuple, (1, 2)),
+                (typing.Tuple[int, str], (1, "1")),
+                (typing.List[int | str], [1, "2", "3", 4]),
+                (typing.Dict[str, int | str], {"1": 1, "2": "2"}),
+                (typing.Optional[int], 1))
+        self.assertTrue(all([parse(*i) for i in args]))
 
 
 if __name__ == "__main__":
