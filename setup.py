@@ -7,7 +7,7 @@ with open("README.md", "r") as file:
 
 setup(
     name="isinstancex",
-    version="2.0.0a",
+    version="2.0.0",
     description="Extend isinstance function",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -17,11 +17,10 @@ setup(
     maintainer_email="jyoon07dev@gmail.com",
     url="https://github.com/DuelitDev/isinstancex",
     packages=find_packages(),
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     keywords=["isinstance", "isinstancex"],
     classifiers=[
         "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",

@@ -1,4 +1,4 @@
-# isinstancex (version: 2.0.0a)
+# isinstancex (version: 2.0.0)
 #
 # Copyright 2023. DuelitDev all rights reserved.
 #
