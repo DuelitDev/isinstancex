@@ -7,10 +7,10 @@
 import typing
 from isinstancex._version import *
 
-__all__ = ["TypeChecker"]
+__all__ = ["TypeHintChecker"]
 
 
-class TypeChecker:
+class TypeHintChecker:
     def __init__(self, expression: typing.Type):
         self._expr: typing.Type = expression
 
