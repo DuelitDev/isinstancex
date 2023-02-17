@@ -6,11 +6,79 @@
 
 
 import typing
+from isinstancex.parser import parse
 
-__all__ = ["try_instance"]
+__all__ = ["isinstancex", "tryinstance", "tryinstancex"]
 
 
-def try_instance(__obj: typing.Any,
+def isinstancex(__obj: typing.Any,
+                __class_or_type_hint: typing.Union[typing.Type, type, tuple]) \
+        -> bool:
+    """
+    Return whether an object is an instance of a class or of a subclass thereof.
+    A tuple or type hint,
+    as in isinstancex(x, (A, B, ...)) or isinstancex(x, typing...),
+    may be given as the target to check against.
+    This is equivalent to isinstance(x, A) or isinstance(x, B) or ... etc.
+
+    :param __obj: An instance.
+    :param __class_or_type_hint: Class type or type hint.
+    :return: bool
+    """
+    return parse(__class_or_type_hint, __obj)
+
+
+def tryinstance(__obj: typing.Any,
+                __class_or_tuple: typing.Union[type, tuple],
+                __raise_exception: type = TypeError,
+                __except_message: str = "a {} is required (got type {})") \
+        -> bool:
+    """
+    Return True or Exception whether
+    an object is an instance of a class or of a subclass thereof.
+    A tuple, as in isinstance(x, (A, B, ...)),
+    may be given as the target to check against.
+    This is equivalent to isinstance(x, A) or isinstance(x, B) or ... etc.
+
+    :param __obj: An instance.
+    :param __class_or_tuple: Class type.
+    :param __raise_exception: Exception type if false.
+    :param __except_message: Exception message if false.
+    :return: bool
+    """
+    return _tryinstance(isinstance, __obj,
+                        __class_or_tuple,
+                        __raise_exception,
+                        __except_message)
+
+
+def tryinstancex(__obj: typing.Any,
+                 __class_or_tuple: typing.Union[type, tuple],
+                 __raise_exception: type = TypeError,
+                 __except_message: str = "a {} is required (got type {})") \
+        -> bool:
+    """
+    Return True or Exception whether
+    an object is an instance of a class or of a subclass thereof.
+    A tuple or type hint,
+    as in isinstancex(x, (A, B, ...)) or isinstancex(x, typing...),
+    may be given as the target to check against.
+    This is equivalent to isinstance(x, A) or isinstance(x, B) or ... etc.
+
+    :param __obj: An instance.
+    :param __class_or_tuple: Class type.
+    :param __raise_exception: Exception type if false.
+    :param __except_message: Exception message if false.
+    :return: bool
+    """
+    return _tryinstance(isinstancex, __obj,
+                        __class_or_tuple,
+                        __raise_exception,
+                        __except_message)
+
+
+def _tryinstance(__function,
+                 __obj: typing.Any,
                  __class_or_tuple: typing.Union[type, tuple],
                  __raise_exception: type = TypeError,
                  __except_message: str = "a {} is required (got type {})") \
@@ -29,10 +97,10 @@ def try_instance(__obj: typing.Any,
     :return: bool
     """
     # type check
-    if isinstance(__obj, __class_or_tuple):
+    if __function(__obj, __class_or_tuple):
         return True
     # get require type name
-    if isinstance(__class_or_tuple, tuple):
+    if __function(__class_or_tuple, tuple):
         temp = []
         for __class in __class_or_tuple:
             temp.append(__class.__name__)
